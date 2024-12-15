@@ -12,6 +12,7 @@ import {
  ColumnItem,
 } from "./components";
 import "devextreme/dist/css/dx.light.css";
+import "./app.css";
 
 const App = () => {
  const [passwords, setPasswords] = useState<Password[]>();
@@ -85,10 +86,8 @@ const App = () => {
 
  const toggleColumn = (column: string) => {
   if (visibleColumns.includes(column)) {
-   // Remove the column
    setVisibleColumns(visibleColumns.filter((col) => col !== column));
   } else {
-   // Add the column back in its original order
    const columnIndex = columns.indexOf(column);
    const updatedColumns = [...visibleColumns];
    updatedColumns.splice(columnIndex, 0, column);
@@ -101,6 +100,18 @@ const App = () => {
  }));
 
  const unselectedColumns = columns.filter((col) => !visibleColumns.includes(col));
+
+ const onRowPrepared = (e: any) => {
+  if (e.rowType === "data") {
+   const rowElement = e.rowElement;
+   rowElement.addEventListener("mouseenter", () => {
+    rowElement.classList.add("custom-hover");
+   });
+   rowElement.addEventListener("mouseleave", () => {
+    rowElement.classList.remove("custom-hover");
+   });
+  }
+ };
 
  return (
   <FlexContainer flexDirection="column" gap="32px" padding="16px">
@@ -116,7 +127,7 @@ const App = () => {
     />
    </FlexContainer>
    <FlexContainer flexDirection="row" gap="32px" dimensions={{ maxHeight: "50%" }}>
-    <DataGrid id="dataGrid" dataSource={filteredPasswords} columns={tableColumns} />
+    <DataGrid id="dataGrid" dataSource={filteredPasswords} columns={tableColumns} onRowPrepared={onRowPrepared} />
     <SidebarContainer>
      <UnselectedSection>
       {unselectedColumns.map((column) => (
