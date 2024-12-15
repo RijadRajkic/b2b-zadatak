@@ -1,16 +1,30 @@
 import { useEffect, useState } from "react";
-import { httpGetPasswords } from "./apis";
+import { httpGetPasswords, httpGetPasswordColumns } from "./apis";
 import { Password } from "./models";
 import { DataGrid } from "devextreme-react/data-grid";
-import { FlexContainer, TitleXXL, BaseInput } from "./components";
-
+import {
+ FlexContainer,
+ TitleXXL,
+ BaseInput,
+ SidebarContainer,
+ UnselectedSection,
+ SelectedSection,
+ ColumnItem,
+} from "./components";
 import "devextreme/dist/css/dx.light.css";
 
-function App() {
+const App = () => {
  const [passwords, setPasswords] = useState<Password[]>();
  const [filteredPasswords, setFilteredPasswords] = useState<Password[]>();
+ const [columns, setColumns] = useState<string[]>([]);
+ const [visibleColumns, setVisibleColumns] = useState<string[]>([
+  "id",
+  "naziv",
+  "klasifikacija",
+  "karakteristikaA",
+  "karakteristikaB",
+ ]);
  const [search, setSearch] = useState<string>("");
-
  const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
 
  const fetchPasswords = async () => {
@@ -23,8 +37,18 @@ function App() {
   }
  };
 
+ const fetchColumns = async () => {
+  try {
+   const response = await httpGetPasswordColumns();
+   setColumns(response.data);
+  } catch (err) {
+   console.error("Error fetching columns", err);
+  }
+ };
+
  useEffect(() => {
   fetchPasswords();
+  fetchColumns();
  }, []);
 
  useEffect(() => {
@@ -48,38 +72,70 @@ function App() {
   if (debouncedSearch.length >= 3 && passwords.length > 0) {
    const lowerSearch = removeSpaces(debouncedSearch);
    const filteredData = passwords.filter((password) => {
-    return (
-     removeSpaces(password.klasifikacija ?? "").includes(lowerSearch) ||
-     removeSpaces(password.naziv ?? "").includes(lowerSearch) ||
-     removeSpaces(password.karakteristikaA ?? "").includes(lowerSearch) ||
-     removeSpaces(password.karakteristikaB ?? "").includes(lowerSearch) ||
-     removeSpaces(password.karakteristikaC ?? "").includes(lowerSearch) ||
-     removeSpaces(password.karakteristikaD ?? "").includes(lowerSearch) ||
-     removeSpaces(password.karakteristikaE ?? "").includes(lowerSearch)
-    );
+    return visibleColumns.some((column) => {
+     const value = password[column as keyof Password];
+     return value && removeSpaces(value).includes(lowerSearch);
+    });
    });
    setFilteredPasswords(filteredData);
   } else {
    setFilteredPasswords(passwords);
   }
- }, [debouncedSearch, passwords]);
+ }, [debouncedSearch, passwords, visibleColumns]);
+
+ const toggleColumn = (column: string) => {
+  if (visibleColumns.includes(column)) {
+   // Remove the column
+   setVisibleColumns(visibleColumns.filter((col) => col !== column));
+  } else {
+   // Add the column back in its original order
+   const columnIndex = columns.indexOf(column);
+   const updatedColumns = [...visibleColumns];
+   updatedColumns.splice(columnIndex, 0, column);
+   setVisibleColumns(updatedColumns);
+  }
+ };
+
+ const tableColumns = visibleColumns.map((column) => ({
+  dataField: column,
+ }));
+
+ const unselectedColumns = columns.filter((col) => !visibleColumns.includes(col));
 
  return (
-  <FlexContainer flexDirection="column" gap="32px">
-   <TitleXXL>Passwords</TitleXXL>
-   <FlexContainer flexDirection="row" dimensions={{ maxWidth: "16rem", maxHeight: "32rem" }}>
+  <FlexContainer flexDirection="column" gap="32px" padding="16px">
+   <FlexContainer justifyContent="space-between">
+    <TitleXXL>Passwords</TitleXXL>
     <BaseInput
      placeholder="Search..."
      value={search}
      onChange={async (e) => {
       setSearch(e.target.value);
      }}
-     dimensions={{ width: "100%", height: "32px" }}
+     dimensions={{ width: "32rem", height: "32px" }}
     />
    </FlexContainer>
-   <DataGrid id="dataGrid" dataSource={filteredPasswords} />
+   <FlexContainer flexDirection="row" gap="32px" dimensions={{ maxHeight: "50%" }}>
+    <DataGrid id="dataGrid" dataSource={filteredPasswords} columns={tableColumns} />
+    <SidebarContainer>
+     <UnselectedSection>
+      {unselectedColumns.map((column) => (
+       <ColumnItem key={column} isSelected={false} onDoubleClick={() => toggleColumn(column)}>
+        {column}
+       </ColumnItem>
+      ))}
+     </UnselectedSection>
+     <SelectedSection>
+      {visibleColumns.map((column) => (
+       <ColumnItem key={column} isSelected={true} onDoubleClick={() => toggleColumn(column)}>
+        {column}
+       </ColumnItem>
+      ))}
+     </SelectedSection>
+    </SidebarContainer>
+   </FlexContainer>
   </FlexContainer>
  );
-}
+};
 
 export default App;

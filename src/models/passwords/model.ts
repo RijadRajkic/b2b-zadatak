@@ -8,3 +8,13 @@ export interface Password {
  karakteristikaD: string;
  karakteristikaE: string;
 }
+
+export type ColumnNames =
+ | "id"
+ | "klasifikacija"
+ | "naziv"
+ | "karakteristikaA"
+ | "karakteristikaB"
+ | "karakteristikaC"
+ | "karakteristikaD"
+ | "karakteristikaE";

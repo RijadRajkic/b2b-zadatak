@@ -1,9 +1,6 @@
 import { httpGet } from "../utilities";
-
-interface HttpGetPasswordColumns {
- total: number;
-}
+import { ColumnNames } from "../../models";
 
 export const httpGetPasswordColumns = async () => {
- return httpGet<HttpGetPasswordColumns>(`/kolone`);
+ return httpGet<ColumnNames[]>(`kolone`);
 };
