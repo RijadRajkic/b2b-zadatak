@@ -118,7 +118,7 @@ export const BaseInput = ({
 
  return (
   <BaseInputWrapper flexDirection={"row"} dimensions={dimensions}>
-   {icon ? <div>{icon}</div> : null}
+   {icon ? icon : null}
    <StyledBaseInput
     border={{ color: "transparent", radius: "0px", width: "0px" }}
     ref={ref}

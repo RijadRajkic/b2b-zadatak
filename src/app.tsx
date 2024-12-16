@@ -46,6 +46,17 @@ const App = () => {
    <FlexContainer justifyContent="space-between">
     <TitleXXL>Passwords</TitleXXL>
     <BaseInput
+     icon={
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <path
+        d="M27.9999 28L22.1999 22.2M25.3333 14.6667C25.3333 20.5577 20.5577 25.3333 14.6667 25.3333C8.7756 25.3333 4 20.5577 4 14.6667C4 8.7756 8.7756 4 14.6667 4C20.5577 4 25.3333 8.7756 25.3333 14.6667Z"
+        stroke="black"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+       />
+      </svg>
+     }
      placeholder="Search..."
      value={search}
      onChange={async (e) => {
