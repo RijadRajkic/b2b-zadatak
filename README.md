@@ -7,7 +7,7 @@ wiht search and column sorting options added.
 
 The website was made using React and Typescript. \
 Using react version 18.xx.xx is recommended. \
-Users should run ### `npm install` before running any of the scrips bellow.
+Users should run `npm install` before running any of the scrips bellow.
 
 ## Available Scripts
 
