@@ -13,7 +13,7 @@ export const StyledBaseInput = styled.input<StyledBaseInputProps>`
  padding: 4px 6px;
 
  color: "#353238";
- font-size: 16px;
+ font-size: 1rem;
 
  background: "#fff";
 
@@ -49,8 +49,8 @@ export const StyledBaseInput = styled.input<StyledBaseInputProps>`
 export const StyledCheckbox = styled(StyledBaseInput).attrs({ type: "checkbox" })`
  appearance: none;
  display: inline-block;
- width: 16px;
- height: 16px;
+ width: 1rem;
+ height: 1rem;
  background-color: "#fff";
  border: 1.5px solid ${({ valid }) => (valid || valid === undefined ? "#C0C0C0" : "#E32636")};
  border-radius: 50%;
@@ -76,7 +76,7 @@ export const StyledNumberInput = styled(StyledBaseInput).attrs({ type: "number" 
 
  padding: unset;
 
- height: 32px;
+ height: 2rem;
 
  &:focus {
   outline: none;

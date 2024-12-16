@@ -1,14 +1,13 @@
 import styled from "styled-components";
 
-// Sidebar container
 export const SidebarContainer = styled.div`
  width: 250px;
  height: fit;
- padding: 16px;
+ padding: 1rem;
  background-color: #fff;
  display: flex;
  flex-direction: column;
- gap: 16px;
+ gap: 1rem;
 `;
 
 export const UnselectedSection = styled.div`
